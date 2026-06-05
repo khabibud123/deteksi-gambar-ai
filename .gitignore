@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+static/assets/uploads/*
+
+detection_results.db
+detection_history.json
+evaluation_report.json
+*.db
+*.sqlite3

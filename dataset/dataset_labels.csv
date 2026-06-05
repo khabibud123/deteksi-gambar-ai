@@ -1,0 +1,11 @@
+filename,label,category,split
+sample_ai_001.jpg,AI,animal,train
+sample_ai_002.jpg,AI,animal,train
+sample_ai_003.jpg,AI,human,train
+sample_ai_004.jpg,AI,object,train
+sample_ai_005.jpg,AI,landscape,train
+sample_human_001.jpg,HUMAN,animal,train
+sample_human_002.jpg,HUMAN,animal,train
+sample_human_003.jpg,HUMAN,human,train
+sample_human_004.jpg,HUMAN,object,train
+sample_human_005.jpg,HUMAN,landscape,train

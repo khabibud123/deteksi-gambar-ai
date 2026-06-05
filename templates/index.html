@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penerapan Fuzzy Logic Sugeno | Deteksi Gambar AI</title>
+    <meta name="description" content="Sistem deteksi gambar AI berbasis Fuzzy Logic Sugeno dan MATLAB." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" integrity="sha512-G4C4W0YdUaCDqnb2+vPQaZL2r9SSHfwWJw6m2D6C6aD+oV4GNL66H/5R6m0Wx2YzJJ9dqcGqBz1s8jZ2vQZhJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div id="particles"></div>
+
+      <header class="navbar" data-aos="fade-down">
+        <div class="navbar-left">
+          <div class="brand-logo">
+            <div class="logo-icon">AI</div>
+            <div>
+              <span class="brand-name">AI Detection</span>
+              <span class="brand-subtitle">Sugeno Research</span>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar-menu">
+          <a href="#home">Home</a>
+          <a href="#detection">Deteksi AI</a>
+          <a href="#sugeno">Fuzzy Sugeno</a>
+          <a href="#analysis">Analisis</a>
+          <a href="#variance-analysis">Variance</a>
+          <a href="#histogram-analysis">Histogram</a>
+          <a href="#rgb-analysis">RGB</a>
+          <a href="#batch-detection">Batch</a>
+          <a href="#detection-history">History</a>
+          <a href="#accuracy">Akurasi</a>
+          <a href="#dataset">Dataset</a>
+          <a href="#contact">Kontak</a>
+        </nav>
+        <div class="navbar-actions">
+          <button class="btn btn-primary" id="startDetection">Mulai Deteksi</button>
+          <button class="btn btn-outline" id="uploadNow">Upload Image</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" id="home">
+          <div class="hero-content" data-aos="fade-right">
+            <p class="eyebrow">Sistem Skripsi AI Detection</p>
+            <h1>PENERAPAN FUZZY LOGIC SUGENO DALAM MENDETEKSI GAMBAR AI</h1>
+            <p class="hero-copy">
+              Sistem cerdas berbasis Fuzzy Logic Sugeno untuk mengidentifikasi gambar AI dan gambar asli menggunakan analisis citra digital.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="heroUpload">Upload Gambar</button>
+              <button class="btn btn-secondary" id="heroDetect">Coba Deteksi</button>
+              <button class="btn btn-outline" id="heroLearn">Pelajari Metode</button>
+            </div>
+            <div class="hero-notes">
+              <span class="pill">Realtime scanning</span>
+              <span class="pill">AI hologram</span>
+              <span class="pill">Cyber analysis</span>
+            </div>
+          </div>
+          <div class="hero-visual" data-aos="fade-left">
+            <div class="hero-card glass-card">
+              <div class="holo-frame">
+                <div class="scan-lines"></div>
+                <div class="holo-screen">
+                  <div class="holo-title">AI IMAGE SCANNER</div>
+                  <div class="holo-stats">
+                    <div>
+                      <span>Deteksi</span>
+                      <strong>0.89s</strong>
+                    </div>
+                    <div>
+                      <span>Frame</span>
+                      <strong>1440p</strong>
+                    </div>
+                  </div>
+                  <div class="holo-grid"></div>
+                </div>
+              </div>
+              <div class="holo-robot"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section upload" id="detection">
+          <div class="section-header">
+            <span class="section-label">Deteksi Gambar</span>
+            <h2>Unggah dan analisis deteksi AI</h2>
+          </div>
+          <div class="upload-layout">
+            <div class="upload-panel glass-card" data-aos="fade-right">
+              <div class="upload-dropzone" id="dropZone">
+                <div class="upload-icon">📁</div>
+                <h3>Drag & drop gambar JPG / PNG</h3>
+                <p>Atau klik untuk memilih file secara manual.</p>
+                <input type="file" id="imageInput" accept="image/png, image/jpeg" />
+              </div>
+              <div class="upload-actions">
+                <button class="btn btn-primary" id="analyzeButton">Analisis Sekarang</button>
+                <button class="btn btn-outline" id="resetButton">Reset</button>
+              </div>
+            </div>
+            <div class="upload-result glass-card" data-aos="fade-left">
+              <div class="result-preview" id="previewShell">
+                <div class="preview-placeholder">Preview gambar akan tampil di sini</div>
+                <img id="previewImage" src="" alt="Preview" />
+              </div>
+              <div class="result-metrics">
+                <div class="metric-card">
+                  <span>AI</span>
+                  <strong id="aiScore">0%</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Human</span>
+                  <strong id="humanScore">0%</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Fuzzy Sugeno</span>
+                  <strong id="sugenoScore">0.70</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Accuracy</span>
+                  <strong id="accuracyScore">0%</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Entropy</span>
+                  <strong id="entropyValue">4.80</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Noise</span>
+                  <strong id="noiseValue">26%</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Edges</span>
+                  <strong id="edgeValue">58%</strong>
+                </div>
+                <div class="metric-card status-card">
+                  <span>Status</span>
+                  <strong id="detectionStatus">AI Generated</strong>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button class="btn btn-secondary" id="downloadReportButton">Download Report</button>
+                <button class="btn btn-outline" id="exportCsvButton">Export CSV</button>
+              </div>
+              <!-- OpenAI Insight panel removed -->
+              <div class="heatmap-card glass-card" data-aos="fade-up">
+                <h3>Heatmap Edge</h3>
+                <img id="edgeHeatmap" src="" alt="Edge Heatmap" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section features" id="features">
+          <div class="section-header">
+            <span class="section-label">Fitur Tambahan</span>
+            <h2>Nilai fitur dan pengujian dataset</h2>
+          </div>
+          <div class="features-grid">
+            <div class="feature-table glass-card" data-aos="fade-up">
+              <h3>Feature Table</h3>
+              <table id="featureTable">
+                <thead>
+                  <tr>
+                    <th>Fitur</th>
+                    <th>Nilai</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="dataset-test glass-card" data-aos="fade-up" data-aos-delay="100">
+              <h3>Dataset Testing</h3>
+              <p>Pilih folder dataset untuk menghitung hasil deteksi secara otomatis.</p>
+              <input type="file" id="datasetInput" webkitdirectory directory multiple />
+              <button class="btn btn-primary" id="datasetTestButton">Uji Dataset</button>
+              <div class="dataset-summary" id="datasetSummary">
+                <p>Total berkas: <strong id="datasetTotal">0</strong></p>
+                <p>Prediksi AI: <strong id="datasetAI">0</strong></p>
+                <p>Prediksi Human: <strong id="datasetHuman">0</strong></p>
+                <p>Uncertain: <strong id="datasetUncertain">0</strong></p>
+                <p>Akurasi rata-rata: <strong id="datasetAccuracy">0%</strong></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section sugeno" id="sugeno">
+          <div class="section-header">
+            <span class="section-label">Fuzzy Sugeno</span>
+            <h2>Metode Perhitungan Deteksi AI</h2>
+          </div>
+          <div class="sugeno-content glass-card" data-aos="fade-up">
+            <p>
+              Sistem menggunakan pendekatan Fuzzy Logic Sugeno untuk menggabungkan metrik citra seperti entropy, deteksi tepi, dan noise.
+              Hasilnya dihitung sebagai skor antara 0 dan 1, lalu diubah menjadi persentase untuk menentukan apakah gambar lebih mungkin merupakan hasil AI atau manusia.
+            </p>
+            <ul>
+      <li>
+        <strong>Entropy</strong> → mengukur kompleksitas distribusi piksel.
+      </li>
+
+      <li>
+        <strong>Edge Density</strong> → mendeteksi ketajaman dan detail tepi objek.
+      </li>
+
+      <li>
+        <strong>Noise Level</strong> → mengukur tingkat gangguan visual citra.
+      </li>
+
+      <li>
+        <strong>FFT Frequency</strong> → menganalisis distribusi frekuensi gambar.
+      </li>
+
+      <li>
+        <strong>Texture (GLCM)</strong> → menganalisis pola tekstur citra digital.
+      </li>
+
+      <li>
+        <strong>Brightness</strong> → mengukur tingkat pencahayaan gambar.
+      </li>
+
+      <li>
+        <strong>Blur Level</strong> → mendeteksi tingkat keburaman citra.
+      </li>
+
+      <li>
+        <strong>RGB Consistency</strong> → mengukur konsistensi distribusi warna.
+      </li>
+
+      <li>
+        <strong>Histogram Distribution</strong> → melihat penyebaran intensitas piksel.
+      </li>
+    </ul>
+          </div>
+        </section>
+
+        <section class="section analysis" id="analysis">
+          <div class="section-header">
+            <span class="section-label">Dashboard Analisis</span>
+            <h2>Visualisasi metrik dan statistik AI</h2>
+          </div>
+          <div class="analysis-grid">
+            <div class="chart-card glass-card" data-aos="fade-up">
+              <div class="card-header">
+                <h3>Entropy Analysis</h3>
+                <span>Nilai kompleksitas citra</span>
+              </div>
+              <canvas id="entropyChart"></canvas>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="card-header">
+                <h3>FFT Analysis</h3>
+                <span>Spektral frekuensi citra</span>
+              </div>
+              <canvas id="fftChart"></canvas>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="card-header">
+                <h3>GLCM Texture</h3>
+                <span>Analisis tekstur citra</span>
+              </div>
+              <canvas id="glcmChart"></canvas>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="300">
+              <div class="card-header">
+                <h3>Histogram Intensitas</h3>
+                <span>Distribusi pixel</span>
+              </div>
+              <canvas id="histChart"></canvas>
+            </div>
+            <div class="stat-cards">
+              <article class="stat-card glass-card" data-aos="fade-up" data-aos-delay="200">
+                <span>Edge Detection</span>
+                <strong id="edgeStatValue">58%</strong>
+              </article>
+              <article class="stat-card glass-card" data-aos="fade-up" data-aos-delay="300">
+                <span>Noise Analysis</span>
+                <strong id="noiseStatValue">26%</strong>
+              </article>
+              <article class="stat-card glass-card" data-aos="fade-up" data-aos-delay="400">
+                <span>Sharpness</span>
+                <strong id="sharpnessStatValue">72%</strong>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section dataset" id="dataset">
+          <div class="section-header">
+            <span class="section-label">Dataset</span>
+            <h2>Perbandingan visual AI vs Human</h2>
+          </div>
+          <div class="gallery-grid">
+            <div class="gallery-card glass-card" data-aos="fade-up">
+              <div class="gallery-badge ai">AI</div>
+              <img class="gallery-image" id="galleryImage1" src="" alt="AI Sample" />
+              <div class="gallery-meta">
+                <span id="galleryLabel1">AI Generated</span>
+                <strong id="galleryScore1">Sample A</strong>
+              </div>
+            </div>
+            <div class="gallery-card glass-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="gallery-badge human">Human</div>
+              <img class="gallery-image" id="galleryImage2" src="" alt="Human Sample" />
+              <div class="gallery-meta">
+                <span id="galleryLabel2">Human Made</span>
+                <strong id="galleryScore2">Sample B</strong>
+              </div>
+            </div>
+            <div class="gallery-card glass-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="gallery-badge hybrid">Hybrid</div>
+              <img class="gallery-image" id="galleryImage3" src="" alt="Comparison Sample" />
+              <div class="gallery-meta">
+                <span id="galleryLabel3">Perbandingan</span>
+                <strong id="galleryScore3">Sample C</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FITUR BARU: Variance Intensity Analysis -->
+        <section class="section variance-analysis" id="variance-analysis">
+          <div class="section-header">
+            <span class="section-label">Fitur Analisis Citra</span>
+            <h2>Variance Intensity Analysis</h2>
+          </div>
+          <div class="analysis-grid">
+            <div class="chart-card glass-card" data-aos="fade-up">
+              <div class="card-header">
+                <h3>Variance Score</h3>
+                <span>Penyebaran intensitas piksel</span>
+              </div>
+              <div class="variance-stats" id="varianceStats">
+                <p>Mean: <strong id="varianceMean">0.00</strong></p>
+                <p>Variance: <strong id="varianceValue">0.00</strong></p>
+                <p>Std Dev: <strong id="varianceStd">0.00</strong></p>
+                <p>Contrast: <strong id="varianceContrast">0%</strong></p>
+              </div>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="card-header">
+                <h3>Pixel Intensity Graph</h3>
+                <span>Distribusi intensitas pixel</span>
+              </div>
+              <canvas id="intensityChart"></canvas>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="card-header">
+                <h3>Intensity Distribution</h3>
+                <span>Kuartil distribusi</span>
+              </div>
+              <div class="intensity-distribution" id="intensityDistribution">
+                <p>Q25: <strong id="q25">0</strong></p>
+                <p>Q50 (Median): <strong id="q50">0</strong></p>
+                <p>Q75: <strong id="q75">0</strong></p>
+                <p>Range: <strong id="intensityRange">0</strong></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FITUR BARU: Histogram Analysis -->
+        <section class="section histogram-analysis" id="histogram-analysis">
+          <div class="section-header">
+            <span class="section-label">Fitur Analisis Citra</span>
+            <h2>Histogram Analysis</h2>
+          </div>
+          <div class="analysis-grid">
+            <div class="chart-card glass-card" data-aos="fade-up">
+              <div class="card-header">
+                <h3>RGB Histogram</h3>
+                <span>Distribusi warna RGB</span>
+              </div>
+              <canvas id="rgbHistogram"></canvas>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="card-header">
+                <h3>Grayscale Histogram</h3>
+                <span>Distribusi grayscale</span>
+              </div>
+              <canvas id="grayscaleHistogram"></canvas>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="card-header">
+                <h3>Pixel Distribution</h3>
+                <span>Statistik histogram</span>
+              </div>
+              <div class="histogram-stats" id="histogramStats">
+                <p>Left (0-85): <strong id="histLeft">0%</strong></p>
+                <p>Middle (85-170): <strong id="histMiddle">0%</strong></p>
+                <p>Right (170-255): <strong id="histRight">0%</strong></p>
+                <p>Peak Bin: <strong id="histPeak">0</strong></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FITUR BARU: RGB Channel Analysis -->
+        <section class="section rgb-analysis" id="rgb-analysis">
+          <div class="section-header">
+            <span class="section-label">Fitur Analisis Citra</span>
+            <h2>RGB Channel Analysis</h2>
+          </div>
+          <div class="analysis-grid">
+            <div class="chart-card glass-card" data-aos="fade-up">
+              <div class="card-header">
+                <h3>Red Channel</h3>
+                <span>Visualisasi channel merah</span>
+              </div>
+              <div class="rgb-stats" id="redChannelStats">
+                <canvas id="redChannelChart"></canvas>
+                <p>Mean: <strong id="redMean">0</strong></p>
+                <p>Std Dev: <strong id="redStd">0</strong></p>
+              </div>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="100">
+              <div class="card-header">
+                <h3>Green Channel</h3>
+                <span>Visualisasi channel hijau</span>
+              </div>
+              <div class="rgb-stats" id="greenChannelStats">
+                <canvas id="greenChannelChart"></canvas>
+                <p>Mean: <strong id="greenMean">0</strong></p>
+                <p>Std Dev: <strong id="greenStd">0</strong></p>
+              </div>
+            </div>
+            <div class="chart-card glass-card" data-aos="fade-up" data-aos-delay="200">
+              <div class="card-header">
+                <h3>Blue Channel</h3>
+                <span>Visualisasi channel biru</span>
+              </div>
+              <div class="rgb-stats" id="blueChannelStats">
+                <canvas id="blueChannelChart"></canvas>
+                <p>Mean: <strong id="blueMean">0</strong></p>
+                <p>Std Dev: <strong id="blueStd">0</strong></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FITUR BARU: Detection History -->
+        <section class="section detection-history" id="detection-history">
+          <div class="section-header">
+            <span class="section-label">Fitur Analisis Citra</span>
+            <h2>Detection History</h2>
+          </div>
+          <div class="history-layout">
+            <div class="history-stats glass-card" data-aos="fade-up">
+              <h3>Riwayat Statistik</h3>
+              <div class="history-summary" id="historySummary">
+                <p>Total Upload: <strong id="historyTotal">0</strong></p>
+                <p>AI Generated: <strong id="historyAI">0</strong></p>
+                <p>Human Made: <strong id="historyHuman">0</strong></p>
+                <p>Uncertain: <strong id="historyUncertain">0</strong></p>
+                <p>Avg Accuracy: <strong id="historyAvgAccuracy">0%</strong></p>
+              </div>
+              <button class="btn btn-outline" id="clearHistoryButton" style="margin-top: 15px;">Clear History</button>
+            </div>
+            <div class="history-table glass-card" data-aos="fade-up" data-aos-delay="100">
+              <h3>Riwayat Upload Gambar</h3>
+              <div class="table-wrapper" style="max-height: 500px; overflow-y: auto;">
+                <table id="historyTable">
+                  <thead>
+                    <tr>
+                      <th>Waktu</th>
+                      <th>File</th>
+                      <th>Status</th>
+                      <th>Akurasi</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section accuracy" id="accuracy">
+          <div class="section-header">
+            <span class="section-label">Akurasi Sistem</span>
+            <h2>Evaluasi performa model</h2>
+          </div>
+          <div class="accuracy-grid">
+            <div class="accuracy-card glass-card" data-aos="fade-up">
+              <h3>Accuracy</h3>
+              <span>94.2%</span>
+            </div>
+            <div class="accuracy-card glass-card" data-aos="fade-up" data-aos-delay="100">
+              <h3>Precision</h3>
+              <span>92.8%</span>
+            </div>
+            <div class="accuracy-card glass-card" data-aos="fade-up" data-aos-delay="200">
+              <h3>Recall</h3>
+              <span>91.5%</span>
+            </div>
+            <div class="accuracy-card glass-card" data-aos="fade-up" data-aos-delay="300">
+              <h3>F1 Score</h3>
+              <span>92.1%</span>
+            </div>
+          </div>
+          <div class="confusion-card glass-card" data-aos="fade-up" data-aos-delay="400">
+            <h3>Confusion Matrix</h3>
+            <div class="matrix-grid">
+              <div>True AI</div>
+              <div>False AI</div>
+              <div id="confusionTrueAI">95%</div>
+              <div id="confusionFalseAI">5%</div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer" id="contact">
+        <div class="footer-content glass-card">
+          <div>
+            <h3>Universitas Islam Balitar</h3>
+            <p>Teknik Informatika - Penelitian Skripsi AI Detection</p>
+            <p>Nama Peneliti: [Muhamad khabibud dhakhiya]</p>
+            <p>Tahun Penelitian: 2026</p>
+          </div>
+          <div class="footer-links">
+            <a href="#">Email</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">GitHub</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 AI Detection Research. All rights reserved.</span>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>
